@@ -43,29 +43,38 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 		return
 	}
 
+	url := p.GetRequest().GetUrl()
 	query := p.GetHtmlParser()
 	var urls []string
 	query.Find("a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
-		if strings.Index(href, "://") < 0 {
-			if _, exist := existUrls[urlHead+href]; !exist {
-				existUrls[urlHead+href] = true
-				urls = append(urls, urlHead+href)
-			}
+		if strings.Index(href, "://") >= 0 {
+			return
+		}
+
+		index := strings.LastIndex(url, "/")
+		if index == -1 {
+			index = len(url)
+		}
+		path := url[0 : index+1]
+
+		if _, exist := existUrls[urlHead+href]; !exist {
+			existUrls[path+href] = true
+			urls = append(urls, urlHead+href)
 		}
 	})
 	// these urls will be saved and crawed by other coroutines.
 	p.AddTargetRequests(urls, "html")
 
-	url := p.GetRequest().GetUrl()
-	index := strings.Index(url, urlHead)
-	var path string
-	if index >= 0 {
-		path = url[len(urlHead):len(url)]
-	}
-	if path == "" {
-		path = "index.html"
-	}
+	//	url := p.GetRequest().GetUrl()
+	//	index := strings.Index(url, urlHead)
+	//	var path string
+	//	if index >= 0 {
+	//		path = url[len(urlHead):len(url)]
+	//	}
+	//	if path == "" {
+	//		path = "index.html"
+	//	}
 	//	fmt.Println("*MyPageProcesser.Process.111,path=", path, ",urls=", urls)
 }
 
