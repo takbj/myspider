@@ -11,6 +11,7 @@ Pckages may be imported:
 */
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -28,16 +29,20 @@ func NewMyPageProcesser() *MyPageProcesser {
 	return &MyPageProcesser{}
 }
 
-var (
-	host    = "ilxdh.com"
-	xx      = "http://"
-	urlHead = xx + host + "/"
+const (
+	host    string = "ilxdh.com"
+	xx      string = "http://"
+	urlHead string = xx + host + "/"
+
+	saveRootPath string = "E:/pro/go_ex/src/github.com/takbj/myspider/xx/"
 )
+
+var existUrls map[string]bool = map[string]bool{}
 
 // Parse html dom here and record the parse result that we want to Page.
 // Package goquery (http://godoc.org/github.com/PuerkitoBio/goquery) is used to parse html.
 func (this *MyPageProcesser) Process(p *page.Page) {
-	fmt.Println("*MyPageProcesser.Process.000")
+	//fmt.Println("*MyPageProcesser.Process.000")
 	if !p.IsSucc() {
 		println(p.Errormsg())
 		return
@@ -45,6 +50,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 
 	url := p.GetRequest().GetUrl()
 	query := p.GetHtmlParser()
+	save(url, p.GetBodyStr())
 	var urls []string
 	query.Find("a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
@@ -78,6 +84,22 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	//	fmt.Println("*MyPageProcesser.Process.111,path=", path, ",urls=", urls)
 }
 
+func save(url, bodyString string) {
+	if len(bodyString) <= 0 {
+		return
+	}
+
+	path := saveRootPath + url[len(urlHead):len(url)]
+	file, err := os.Create(path)
+	if err != nil {
+		println("out file[", path, "] err:", err)
+		return
+	}
+	defer file.Close()
+
+	file.WriteString(bodyString)
+}
+
 func (this *MyPageProcesser) Finish() {
 	fmt.Printf("TODO:before end spider \r\n")
 }
@@ -88,14 +110,13 @@ type MyPipeline struct {
 func (this *MyPipeline) Process(items *page_items.PageItems, t com_interfaces.Task) {
 	println("----------------------------------------------------------------------------------------------")
 	println("Crawled url :\t" + items.GetRequest().GetUrl() + "\n")
+	//	println("",items.)
 	println("Crawled result : ")
 	for key, value := range items.GetAll() {
 		println(key + "\t:\t" + value)
 	}
 	println("==============================================================================================")
 }
-
-var existUrls map[string]bool = map[string]bool{}
 
 func main() {
 	// Spider input:
