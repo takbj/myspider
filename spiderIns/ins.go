@@ -13,6 +13,11 @@ const (
 	cstSaveRootPath string = "E:/zsy/spider_out/"
 )
 
+var allHosts = map[string]bool{
+	"ilxdh.com":     true,
+	"www.ilxdh.com": true,
+}
+
 var existUrls map[string]bool = map[string]bool{}
 
 func Run() {
