@@ -15,9 +15,8 @@ type MyPageProcesser struct {
 	configer interface{} //SiteCfg
 }
 
-func NewMyPageProcesser(configer interface{}) *MyPageProcesser {
-	this.configer = configer
-	return &MyPageProcesser{}
+func NewMyPageProcesser(configerIn interface{}) *MyPageProcesser {
+	return &MyPageProcesser{configer: configerIn}
 }
 
 func (this *MyPageProcesser) Finish() {
@@ -25,7 +24,7 @@ func (this *MyPageProcesser) Finish() {
 }
 
 type SiteCfg interface {
-	GetStartUrl() string               //起始页面
+	GetStartUrls() []string            //起始页面
 	GetDefaultFileName() string        //站点的默认索引文件名，ex: index.html
 	GetHostList() []string             //爬取的Host列表
 	CheckHost(host string) bool        //检查一个host是否在爬取的Host列表内

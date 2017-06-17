@@ -11,7 +11,7 @@ var (
 )
 
 type SiteCfg struct {
-	StartUrl        string
+	StartUrls       []string
 	DefaultFileName string
 	HostList        []string
 	SearchNodes     map[string]string
@@ -19,8 +19,8 @@ type SiteCfg struct {
 	hostMaps map[string]bool
 }
 
-func (this *SiteCfg) GetStartUrl() string { //起始页面
-	return this.StartUrl
+func (this *SiteCfg) GetStartUrls() []string { //起始页面
+	return this.StartUrls
 }
 
 func (this *SiteCfg) GetDefaultFileName() string { //站点的默认索引文件名，ex: index.html

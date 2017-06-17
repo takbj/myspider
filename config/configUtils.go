@@ -1,8 +1,9 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
-	"golib/json"
+	//	"golib/json"
 	"io/ioutil"
 	"os"
 	"reflect"

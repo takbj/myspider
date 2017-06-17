@@ -1,0 +1,10 @@
+{
+	StartUrls:["http://ilxdh.com/index.html","http://m.ilxdh.com/index.html"],
+	DefaultFileName:"index.html",
+	HostList:["ilxdh.com","m.ilxdh.com","www.ilxdh.com"],
+	SearchNodes:{
+		"a":"href",
+		"link":"href",
+		"script":"src",
+	}
+}

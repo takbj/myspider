@@ -14,12 +14,6 @@ const (
 	cstSaveRootPath string = "E:/zsy/spider_out/"
 )
 
-var allHosts = map[string]bool{
-	"ilxdh.com":     true,
-	"www.ilxdh.com": true,
-	"m.ilxdh.com":   true,
-}
-
 var existUrls map[string]bool = map[string]bool{}
 
 func Run() {
@@ -30,17 +24,12 @@ func Run() {
 	url := cstUrlHead + "index.html"
 	existUrls[url] = true
 
-	spider.NewSpider(NewMyPageProcesser(&config.C_SiteCfg), "TaskName").
-		AddUrl(url, "html").        // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
-		AddPipeline(&MyPipeline{}). // Print result on screen
-		SetThreadnum(8).            // Crawl request by three Coroutines
-		Run()
-
-	existUrls["http://m.ilxdh.com/index.html"] = true
-	spider.NewSpider(NewMyPageProcesser(), "TaskName").
-		AddUrl("http://m.ilxdh.com/index.html", "html"). // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
-		AddPipeline(&MyPipeline{}).                      // Print result on screen
-		SetThreadnum(8).                                 // Crawl request by three Coroutines
-		Run()
+	spiderIns := spider.NewSpider(NewMyPageProcesser(&config.C_SiteCfg), "TaskName")
+	for _, startUrl := range config.C_SiteCfg.GetStartUrls() {
+		spiderIns.AddUrl(startUrl, "html") // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
+	}
+	spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
+						SetThreadnum(8). // Crawl request by three Coroutines
+						Run()
 
 }
