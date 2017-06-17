@@ -12,14 +12,24 @@ import (
 )
 
 type MyPageProcesser struct {
+	configer interface{} //SiteCfg
 }
 
-func NewMyPageProcesser() *MyPageProcesser {
+func NewMyPageProcesser(configer interface{}) *MyPageProcesser {
+	this.configer = configer
 	return &MyPageProcesser{}
 }
 
 func (this *MyPageProcesser) Finish() {
 	fmt.Printf("TODO:before end spider \r\n")
+}
+
+type SiteCfg interface {
+	GetStartUrl() string               //起始页面
+	GetDefaultFileName() string        //站点的默认索引文件名，ex: index.html
+	GetHostList() []string             //爬取的Host列表
+	CheckHost(host string) bool        //检查一个host是否在爬取的Host列表内
+	GetSearchNodes() map[string]string //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 }
 
 // Parse html dom here and record the parse result that we want to Page.
@@ -42,23 +52,20 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	//	urlDir := fmt.Sprintf("%s://%s%s", curUrl.Scheme, curUrl.Host, relativePath)
 
 	var urls = []string{}
+	var herfAttrName string
 	cbFun := func(i int, s *goquery.Selection) {
-		href, exist := s.Attr("href")
-		if !exist {
-			href, _ = s.Attr("src")
-		}
-		//		fmt.Println("href=", href)
+		href, _ := s.Attr(herfAttrName)
 		hrefUrl, _ := url.Parse(href)
 		if !hrefUrl.IsAbs() {
 			hrefUrl.Host = curUrl.Host
 			hrefUrl.Path = relativePath + hrefUrl.Path
 			hrefUrl.Scheme = curUrl.Scheme
 		}
-		if ok, exist := allHosts[hrefUrl.Host]; !ok || !exist {
+		if !this.configer.(SiteCfg).CheckHost(hrefUrl.Host) {
 			return
 		}
 		if hrefUrl.Path == "" || hrefUrl.Path == "\\" || hrefUrl.Path == "/" {
-			hrefUrl.Path = "/index.html"
+			hrefUrl.Path = this.configer.(SiteCfg).GetDefaultFileName()
 		}
 
 		urlTmp := hrefUrl.String()
@@ -70,9 +77,10 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 		}
 	}
 
-	query.Find("a").Each(cbFun)
-	query.Find("link").Each(cbFun)
-	query.Find("script").Each(cbFun)
+	for nodeName, nodeAttr := range this.configer.(SiteCfg).GetSearchNodes() {
+		herfAttrName = nodeAttr //"href","src"
+		query.Find(nodeName).Each(cbFun)
+	}
 
 	// these urls will be saved and crawed by other coroutines.
 	fmt.Println("*MyPageProcesser.Process", urls)
