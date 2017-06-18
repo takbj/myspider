@@ -9,6 +9,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hu17889/go_spider/core/common/page"
+	"github.com/takbj/myspider/config"
+	"github.com/takbj/go_tools/mylog"
 )
 
 type MyPageProcesser struct {
@@ -60,15 +62,16 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 			hrefUrl.Path = relativePath + hrefUrl.Path
 			hrefUrl.Scheme = curUrl.Scheme
 		}
+
 		if !this.configer.(SiteCfg).CheckHost(hrefUrl.Host) {
 			return
 		}
+
 		if hrefUrl.Path == "" || hrefUrl.Path == "\\" || hrefUrl.Path == "/" {
 			hrefUrl.Path = this.configer.(SiteCfg).GetDefaultFileName()
 		}
 
 		urlTmp := hrefUrl.String()
-		//		fmt.Println("href=", href, "urlTmp=", urlTmp)
 
 		if _, exist := existUrls[urlTmp]; !exist {
 			existUrls[urlTmp] = true
@@ -82,7 +85,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	}
 
 	// these urls will be saved and crawed by other coroutines.
-	fmt.Println("*MyPageProcesser.Process", urls)
+	fmt.Println("*MyPageProcesser.Process, urls", urls)
 	p.AddTargetRequests(urls, "html")
 }
 
@@ -97,7 +100,7 @@ func save(curUrl *url.URL, bodyString string) {
 	absPath := path.Join(filePath, fileName)
 	file, err := os.Create(absPath)
 	if err != nil {
-		println("out file[", absPath, "] err:", err)
+		mylog.Error("out file[", absPath, "] err:", err)
 		return
 	}
 	defer file.Close()
@@ -109,9 +112,10 @@ func getFilePath(curUrl *url.URL) (filePath, fileName string) {
 	pathTmp := []string{cstSaveRootPath, curUrl.Host}
 
 	pathTmp = append(pathTmp, strings.Split(curUrl.Path, "/")...)
-	fmt.Println(pathTmp[:len(pathTmp)-1])
 
 	filePath = path.Join(pathTmp[:len(pathTmp)-1]...)
-	fmt.Println("filePath=", filePath, ",pathTmp[len(pathTmp)-1]=", pathTmp[len(pathTmp)-1])
+	if config.C_GlobalCfg.DebugFlag{
+		fmt.Println("getFilePath.111 filePath=", filePath, ",pathTmp[len(pathTmp)-1]=", pathTmp[len(pathTmp)-1])
+	}
 	return filePath, pathTmp[len(pathTmp)-1]
 }

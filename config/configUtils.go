@@ -56,9 +56,8 @@ func ReloadCfg(cfgName string) error {
 	if err := reloadCfgReal(cfgItem.fileName, tmpCfg.Interface()); err != nil {
 		return err
 	}
-	cfgItem.cfgDataRef.(ifConfig).OnAfterLoad()
-
 	reflect.ValueOf(cfgItem.cfgDataRef).Elem().Set(tmpCfg.Elem())
+	cfgItem.cfgDataRef.(ifConfig).OnAfterLoad()
 	return nil
 }
 
@@ -84,7 +83,6 @@ func reloadCfgReal(cfgFile string, outRef interface{}) error {
 		filedType := outType.Field(i)
 		fieldValue := outValues.Field(i)
 
-		fmt.Println(filedType.Name)
 		if reflect.DeepEqual(fieldValue.Interface(), reflect.New(filedType.Type).Elem().Interface()) { //
 			canNotSetFiledNames = append(canNotSetFiledNames, filedType.Name)
 		}

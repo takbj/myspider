@@ -1,16 +1,16 @@
 package config
 
-// import (
-// 	"fmt"
+import (
+//	"fmt"
 // 	"misc/mylog"
 // 	"os"
-// )
-
-var (
-	C_SiteCfg SiteCfg
 )
 
-type SiteCfg struct {
+var (
+	C_SiteCfg TSiteCfg
+)
+
+type TSiteCfg struct {
 	StartUrls       []string
 	DefaultFileName string
 	HostList        []string
@@ -19,32 +19,32 @@ type SiteCfg struct {
 	HostMaps map[string]bool
 }
 
-func (this *SiteCfg) GetStartUrls() []string { //起始页面
+func (this *TSiteCfg) GetStartUrls() []string { //起始页面
 	return this.StartUrls
 }
 
-func (this *SiteCfg) GetDefaultFileName() string { //站点的默认索引文件名，ex: index.html
+func (this *TSiteCfg) GetDefaultFileName() string { //站点的默认索引文件名，ex: index.html
 	return this.DefaultFileName
 }
 
-func (this *SiteCfg) GetHostList() []string { //爬取的Host列表
+func (this *TSiteCfg) GetHostList() []string { //爬取的Host列表
 	return this.HostList
 }
 
-func (this *SiteCfg) CheckHost(host string) bool { //检查一个host是否在爬取的Host列表内
+func (this *TSiteCfg) CheckHost(host string) bool { //检查一个host是否在爬取的Host列表内
 	ok, exist := this.HostMaps[host]
 	return exist && ok
 }
 
-func (this *SiteCfg) GetSearchNodes() map[string]string { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
+func (this *TSiteCfg) GetSearchNodes() map[string]string { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 	return this.SearchNodes
 }
 
-func (this *SiteCfg) OnBeforeLoad() {
+func (this *TSiteCfg) OnBeforeLoad() {
 
 }
 
-func (this *SiteCfg) OnAfterLoad() {
+func (this *TSiteCfg) OnAfterLoad() {
 	this.HostMaps = map[string]bool{}
 	for _, host := range this.HostList {
 		this.HostMaps[host] = true
