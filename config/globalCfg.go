@@ -22,7 +22,7 @@ func (this *TGlobalCfg) OnAfterLoad() {
 }
 
 func init() {
-	registerCfg("global", "config/globalCfg.json", &C_GlobalCfg)
+	registerCfg("global", "config/global_cfg.json", &C_GlobalCfg)
 }
 
 // func init() {
