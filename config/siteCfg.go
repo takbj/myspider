@@ -16,7 +16,7 @@ type SiteCfg struct {
 	HostList        []string
 	SearchNodes     map[string]string
 
-	hostMaps map[string]bool
+	HostMaps map[string]bool
 }
 
 func (this *SiteCfg) GetStartUrls() []string { //起始页面
@@ -32,7 +32,7 @@ func (this *SiteCfg) GetHostList() []string { //爬取的Host列表
 }
 
 func (this *SiteCfg) CheckHost(host string) bool { //检查一个host是否在爬取的Host列表内
-	ok, exist := this.hostMaps[host]
+	ok, exist := this.HostMaps[host]
 	return exist && ok
 }
 
@@ -45,9 +45,9 @@ func (this *SiteCfg) OnBeforeLoad() {
 }
 
 func (this *SiteCfg) OnAfterLoad() {
-	this.hostMaps = map[string]bool{}
+	this.HostMaps = map[string]bool{}
 	for _, host := range this.HostList {
-		this.hostMaps[host] = true
+		this.HostMaps[host] = true
 	}
 }
 

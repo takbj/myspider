@@ -83,6 +83,8 @@ func reloadCfgReal(cfgFile string, outRef interface{}) error {
 	for i := 0; i < outType.NumField(); i++ {
 		filedType := outType.Field(i)
 		fieldValue := outValues.Field(i)
+
+		fmt.Println(filedType.Name)
 		if reflect.DeepEqual(fieldValue.Interface(), reflect.New(filedType.Type).Elem().Interface()) { //
 			canNotSetFiledNames = append(canNotSetFiledNames, filedType.Name)
 		}

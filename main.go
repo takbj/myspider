@@ -10,9 +10,11 @@ Pckages may be imported:
     "github.com/PuerkitoBio/goquery": html dom parser.
 */
 import (
+	"github.com/takbj/myspider/config"
 	"github.com/takbj/myspider/spiderIns"
 )
 
 func main() {
+	config.Init()
 	spiderIns.Run()
 }

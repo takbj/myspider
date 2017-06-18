@@ -21,11 +21,12 @@ func Run() {
 	//  PageProcesser ;
 	//  Task name used in Pipeline for record;
 	//
-	url := cstUrlHead + "index.html"
-	existUrls[url] = true
+	//	url := cstUrlHead + "index.html"
+	//	existUrls[url] = true
 
 	spiderIns := spider.NewSpider(NewMyPageProcesser(&config.C_SiteCfg), "TaskName")
 	for _, startUrl := range config.C_SiteCfg.GetStartUrls() {
+		existUrls[startUrl] = true
 		spiderIns.AddUrl(startUrl, "html") // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
 	}
 	spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
