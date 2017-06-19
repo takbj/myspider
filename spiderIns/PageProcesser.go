@@ -2,6 +2,7 @@ package spiderIns
 
 import (
 	"fmt"
+	//	"io"
 	"net/url"
 	"os"
 	"path"
@@ -118,7 +119,8 @@ func save(curUrl *url.URL, bodyString string) bool {
 	}
 	defer file.Close()
 
-	file.WriteString(bodyString)
+	//	io.Copy(file, []byte(bodyString))
+	file.Write([]byte(bodyString))
 
 	return true
 }

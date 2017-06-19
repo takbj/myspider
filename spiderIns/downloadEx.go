@@ -1,8 +1,12 @@
 package spiderIns
 
 import (
+	"fmt"
+
 	"github.com/hu17889/go_spider/core/downloader"
 	//	"bytes"
+	"io/ioutil"
+	"net/http"
 
 	//	"github.com/PuerkitoBio/goquery"
 	//	"github.com/bitly/go-simplejson"
@@ -45,11 +49,23 @@ func (this *tDownloadEx) Download(req *request.Request) *page.Page {
 }
 
 func (this *tDownloadEx) downloadBin(p *page.Page, req *request.Request) *page.Page {
-	p, destbody := this.DownloadFile(p, req)
-	if !p.IsSucc() {
+	resp, err := http.Get(req.Url)
+	//	io.Copy(file, resp.Body)
+
+	//	p, destbody := this.DownloadFile(p, req)
+	//	if !p.IsSucc() {
+	//		return p
+	//	}
+	if err != nil {
+		fmt.Println("downloadBin  err=", err)
 		return p
 	}
 
-	p.SetBodyStr(destbody).SetStatus(false, "")
+	defer resp.Body.Close()
+	respBody, err := ioutil.ReadAll(resp.Body)
+
+	//	fmt.Println("downloadBin  req.Url=", req.Url, ",len(respBody)=", len(respBody))
+
+	p.SetBodyStr(string(respBody)).SetStatus(false, "")
 	return p
 }
