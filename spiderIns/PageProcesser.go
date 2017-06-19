@@ -10,7 +10,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hu17889/go_spider/core/common/page"
-//	"github.com/takbj/myspider/config"
+	"github.com/takbj/myspider/config"
 )
 
 type MyPageProcesser struct {
@@ -59,7 +59,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	lastSepIndex := strings.LastIndex(curUrl.Path, "/")
 	relativePath := curUrl.Path[:lastSepIndex+1]
 	var urls = map[string]string{}
-	var spiderNodeInfo interface
+	var spiderNodeInfo interface{}
 	cbFun := func(i int, s *goquery.Selection) {
 		href, exist := s.Attr(spiderNodeInfo.(IFSpiderNodeInfo).GetAttrName())
 		if !exist {
@@ -93,7 +93,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 			//			urls = append(urls, urlTmp)
 		}
 	}
-
+	//	fmt.Println(this.configer.(SiteCfg).GetSearchNodes())
 	for nodeName, nodeAttr := range this.configer.(SiteCfg).GetSearchNodes() {
 		spiderNodeInfo = nodeAttr //"href","src"
 		query.Find(nodeName).Each(cbFun)

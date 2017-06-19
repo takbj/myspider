@@ -14,10 +14,10 @@ type TSiteUrl struct {
 }
 
 func (this *TSiteUrl) GetAttrName() string {
-	return AttrName
+	return this.AttrName
 }
 func (this *TSiteUrl) GetAttrType() string {
-	return AttrType
+	return this.AttrType
 }
 
 type TSiteCfg struct {
