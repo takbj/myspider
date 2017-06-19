@@ -13,6 +13,13 @@ type TSiteUrl struct {
 	AttrType string
 }
 
+func (this *TSiteUrl) GetAttrName() string {
+	return AttrName
+}
+func (this *TSiteUrl) GetAttrType() string {
+	return AttrType
+}
+
 type TSiteCfg struct {
 	StartUrls       []string
 	DefaultFileName string

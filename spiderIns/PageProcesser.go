@@ -10,7 +10,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hu17889/go_spider/core/common/page"
-	"github.com/takbj/myspider/config"
+//	"github.com/takbj/myspider/config"
 )
 
 type MyPageProcesser struct {
@@ -25,12 +25,17 @@ func (this *MyPageProcesser) Finish() {
 	fmt.Printf("TODO:before end spider \r\n")
 }
 
+type IFSpiderNodeInfo interface {
+	GetAttrName() string
+	GetAttrType() string
+}
+
 type SiteCfg interface {
 	GetStartUrls() []string                      //起始页面
 	GetDefaultFileName() string                  //站点的默认索引文件名，ex: index.html
 	GetHostList() []string                       //爬取的Host列表
 	CheckHost(host string) bool                  //检查一个host是否在爬取的Host列表内
-	GetSearchNodes() map[string]*config.TSiteUrl //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
+	GetSearchNodes() map[string]IFSpiderNodeInfo //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 }
 
 // Parse html dom here and record the parse result that we want to Page.
@@ -54,9 +59,9 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	lastSepIndex := strings.LastIndex(curUrl.Path, "/")
 	relativePath := curUrl.Path[:lastSepIndex+1]
 	var urls = map[string]string{}
-	var herfAttrName *config.TSiteUrl
+	var spiderNodeInfo interface
 	cbFun := func(i int, s *goquery.Selection) {
-		href, exist := s.Attr(herfAttrName.AttrName)
+		href, exist := s.Attr(spiderNodeInfo.(IFSpiderNodeInfo).GetAttrName())
 		if !exist {
 			return
 		}
@@ -84,13 +89,13 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 
 		if _, exist := existUrls[urlTmp]; !exist {
 			existUrls[urlTmp] = true
-			urls[urlTmp] = herfAttrName.AttrType
+			urls[urlTmp] = spiderNodeInfo.(IFSpiderNodeInfo).GetAttrType()
 			//			urls = append(urls, urlTmp)
 		}
 	}
 
 	for nodeName, nodeAttr := range this.configer.(SiteCfg).GetSearchNodes() {
-		herfAttrName = nodeAttr //"href","src"
+		spiderNodeInfo = nodeAttr //"href","src"
 		query.Find(nodeName).Each(cbFun)
 	}
 
