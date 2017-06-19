@@ -1,10 +1,11 @@
 {
 	"StartUrls":["http://ilxdh.com/index.html","http://m.ilxdh.com/index.html"],
 	"DefaultFileName":"index.html",
-	"HostList":["ilxdh.com","m.ilxdh.com","www.ilxdh.com"],
+	"HostList":["ilxdh.com","m.ilxdh.com","www.ilxdh.com","wx1.sinaimg.cn","wx2.sinaimg.cn","wx3.sinaimg.cn","wx4.sinaimg.cn"],
 	"SearchNodes":{
-		"a":"href",
-		"link":"href",
-		"script":"src"
+		"a":{"AttrName":"href", "AttrType":"html"},
+		"link":{"AttrName":"href", "AttrType":"html"},
+		"script":{"AttrName":"src", "AttrType":"html"},
+		"img":{"AttrName":"src", "AttrType":"bin"}
 	}
 }

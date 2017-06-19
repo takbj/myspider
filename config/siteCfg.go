@@ -1,20 +1,23 @@
 package config
 
-import (
 //	"fmt"
 // 	"misc/mylog"
 // 	"os"
-)
 
 var (
 	C_SiteCfg TSiteCfg
 )
 
+type TSiteUrl struct {
+	AttrName string
+	AttrType string
+}
+
 type TSiteCfg struct {
 	StartUrls       []string
 	DefaultFileName string
 	HostList        []string
-	SearchNodes     map[string]string
+	SearchNodes     map[string]*TSiteUrl
 
 	HostMaps map[string]bool
 }
@@ -36,7 +39,7 @@ func (this *TSiteCfg) CheckHost(host string) bool { //检查一个host是否在�
 	return exist && ok
 }
 
-func (this *TSiteCfg) GetSearchNodes() map[string]string { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
+func (this *TSiteCfg) GetSearchNodes() map[string]*TSiteUrl { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 	return this.SearchNodes
 }
 

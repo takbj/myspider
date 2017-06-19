@@ -20,9 +20,6 @@ func Run() {
 	// Spider input:
 	//  PageProcesser ;
 	//  Task name used in Pipeline for record;
-	//
-	//	url := cstUrlHead + "index.html"
-	//	existUrls[url] = true
 
 	spiderIns := spider.NewSpider(NewMyPageProcesser(&config.C_SiteCfg), "TaskName")
 	for _, startUrl := range config.C_SiteCfg.GetStartUrls() {
@@ -31,6 +28,7 @@ func Run() {
 	}
 	spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
 						SetThreadnum(8). // Crawl request by three Coroutines
+						SetDownloader(&tDownloadEx{}).
 						Run()
 
 }
