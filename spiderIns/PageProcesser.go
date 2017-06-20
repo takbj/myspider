@@ -42,9 +42,13 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	}
 
 	urlStr := p.GetRequest().GetUrl()
-	curUrl, _ := url.Parse(urlStr)
 
-	query := p.GetHtmlParser()
+	curUrl, _ := url.Parse(urlStr)
+	//	tmp := strings.Index(curUrl.Path, ".")
+	if len(p.GetHeader()) <= 0 {
+		return
+	}
+
 	if !save(curUrl, p.GetBodyStr()) {
 		if config.C_GlobalCfg.DebugFlag {
 			fmt.Println("\n\n\nsave \"", urlStr, "\" failed!")
@@ -90,6 +94,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 		}
 	}
 
+	query := p.GetHtmlParser()
 	this.configer.(IFSiteCfg).ForEachSearchNodes(nil, func(a_nodeName, a_attrName, a_attrType string, param interface{}) {
 		attrName = a_attrName
 		attrType = a_attrType

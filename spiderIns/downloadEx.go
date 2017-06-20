@@ -63,6 +63,12 @@ func (this *tDownloadEx) downloadBin(p *page.Page, req *request.Request) *page.P
 
 	defer resp.Body.Close()
 	respBody, err := ioutil.ReadAll(resp.Body)
+	p.SetHeader(resp.Header)
+	if resp.StatusCode != 200 {
+		p.SetStatus(true, resp.Status)
+	} else {
+		p.SetStatus(false, "")
+	}
 
 	//	fmt.Println("downloadBin  req.Url=", req.Url, ",len(respBody)=", len(respBody))
 
