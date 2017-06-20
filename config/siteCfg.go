@@ -8,23 +8,16 @@ var (
 	C_SiteCfg TSiteCfg
 )
 
-type TSiteUrl struct {
+type TParseNode struct {
 	AttrName string
 	AttrType string
-}
-
-func (this *TSiteUrl) GetAttrName() string {
-	return this.AttrName
-}
-func (this *TSiteUrl) GetAttrType() string {
-	return this.AttrType
 }
 
 type TSiteCfg struct {
 	StartUrls       []string
 	DefaultFileName string
 	HostList        []string
-	SearchNodes     map[string]*TSiteUrl
+	SearchNodes     map[string]*TParseNode
 
 	HostMaps map[string]bool
 }
@@ -46,8 +39,14 @@ func (this *TSiteCfg) CheckHost(host string) bool { //检查一个host是否在�
 	return exist && ok
 }
 
-func (this *TSiteCfg) GetSearchNodes() map[string]*TSiteUrl { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
+func (this *TSiteCfg) GetSearchNodes() map[string]*TParseNode { //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 	return this.SearchNodes
+}
+
+func (this *TSiteCfg) ForEachSearchNodes(param interface{}, cbFun func(nodeName string, attrName, attrType string, param interface{})) {
+	for nodeName, nodeAttr := range this.SearchNodes {
+		cbFun(nodeName, nodeAttr.AttrName, nodeAttr.AttrType, param)
+	}
 }
 
 func (this *TSiteCfg) OnBeforeLoad() {

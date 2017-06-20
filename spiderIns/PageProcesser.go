@@ -25,17 +25,13 @@ func (this *MyPageProcesser) Finish() {
 	fmt.Printf("TODO:before end spider \r\n")
 }
 
-type IFSpiderNodeInfo interface {
-	GetAttrName() string
-	GetAttrType() string
-}
-
-type SiteCfg interface {
-	GetStartUrls() []string                      //起始页面
-	GetDefaultFileName() string                  //站点的默认索引文件名，ex: index.html
-	GetHostList() []string                       //爬取的Host列表
-	CheckHost(host string) bool                  //检查一个host是否在爬取的Host列表内
-	GetSearchNodes() map[string]IFSpiderNodeInfo //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
+type IFSiteCfg interface {
+	GetStartUrls() []string     //起始页面
+	GetDefaultFileName() string //站点的默认索引文件名，ex: index.html
+	GetHostList() []string      //爬取的Host列表
+	CheckHost(host string) bool //检查一个host是否在爬取的Host列表内
+	ForEachSearchNodes(param interface{}, cbFunc func(nodeName string, attrName string, attrType string, param interface{}))
+	//	GetSearchNodes() map[string]config. //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 }
 
 // Parse html dom here and record the parse result that we want to Page.
@@ -59,9 +55,10 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	lastSepIndex := strings.LastIndex(curUrl.Path, "/")
 	relativePath := curUrl.Path[:lastSepIndex+1]
 	var urls = map[string]string{}
-	var spiderNodeInfo interface{}
+	var attrName string
+	var attrType string
 	cbFun := func(i int, s *goquery.Selection) {
-		href, exist := s.Attr(spiderNodeInfo.(IFSpiderNodeInfo).GetAttrName())
+		href, exist := s.Attr(attrName)
 		if !exist {
 			return
 		}
@@ -72,11 +69,11 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 			hrefUrl.Path = relativePath + hrefUrl.Path
 			hrefUrl.Scheme = curUrl.Scheme
 		}
-		if !this.configer.(SiteCfg).CheckHost(hrefUrl.Host) {
+		if !this.configer.(IFSiteCfg).CheckHost(hrefUrl.Host) {
 			return
 		}
 		if hrefUrl.Path == "" || hrefUrl.Path == "\\" || hrefUrl.Path == "/" {
-			hrefUrl.Path = this.configer.(SiteCfg).GetDefaultFileName()
+			hrefUrl.Path = this.configer.(IFSiteCfg).GetDefaultFileName()
 		}
 
 		urlTmp := hrefUrl.String()
@@ -89,15 +86,16 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 
 		if _, exist := existUrls[urlTmp]; !exist {
 			existUrls[urlTmp] = true
-			urls[urlTmp] = spiderNodeInfo.(IFSpiderNodeInfo).GetAttrType()
+			urls[urlTmp] = attrType
 			//			urls = append(urls, urlTmp)
 		}
 	}
-	//	fmt.Println(this.configer.(SiteCfg).GetSearchNodes())
-	for nodeName, nodeAttr := range this.configer.(SiteCfg).GetSearchNodes() {
-		spiderNodeInfo = nodeAttr //"href","src"
-		query.Find(nodeName).Each(cbFun)
-	}
+
+	this.configer.(IFSiteCfg).ForEachSearchNodes(nil, func(a_nodeName, a_attrName, a_attrType string, param interface{}) {
+		attrName = a_attrName
+		attrType = a_attrType
+		query.Find(a_nodeName).Each(cbFun)
+	})
 
 	// these urls will be saved and crawed by other coroutines.
 	//	fmt.Println("*MyPageProcesser.Process", urls)
