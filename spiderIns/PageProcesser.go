@@ -31,7 +31,6 @@ type IFSiteCfg interface {
 	GetHostList() []string      //爬取的Host列表
 	CheckHost(host string) bool //检查一个host是否在爬取的Host列表内
 	ForEachSearchNodes(param interface{}, cbFunc func(nodeName string, attrName string, attrType string, param interface{}))
-	//	GetSearchNodes() map[string]config. //获取需要爬取的节点,ex: map[string]string{"a":"href","link":"href","script":"src"}
 }
 
 // Parse html dom here and record the parse result that we want to Page.
