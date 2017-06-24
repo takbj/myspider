@@ -2,15 +2,15 @@ package main
 
 import (
     "github.com/PuerkitoBio/goquery"
-    "github.com/hu17889/go_spider/core/common/mlog"
-    "github.com/hu17889/go_spider/core/common/page"
-    "github.com/hu17889/go_spider/core/pipeline"
-    "github.com/hu17889/go_spider/extension/scheduler"
+    "github.com/takbj/myspider/3rd/go_spider/core/common/mlog"
+    "github.com/takbj/myspider/3rd/go_spider/core/common/page"
+    "github.com/takbj/myspider/3rd/go_spider/core/pipeline"
+    "github.com/takbj/myspider/3rd/go_spider/extension/scheduler"
     "net/url"
     "regexp"
     "strings"
-    //"github.com/hu17889/go_spider/core/scheduler"
-    "github.com/hu17889/go_spider/core/spider"
+    //"github.com/takbj/myspider/3rd/go_spider/core/scheduler"
+    "github.com/takbj/myspider/3rd/go_spider/core/spider"
     "os"
 )
 

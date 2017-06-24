@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/hu17889/go_spider/core/common/page"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/page"
 	"github.com/takbj/myspider/config"
 )
 
@@ -45,7 +45,8 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 
 	curUrl, _ := url.Parse(urlStr)
 	//	tmp := strings.Index(curUrl.Path, ".")
-	if len(p.GetHeader()) <= 0 {
+	resp := p.GetResp()
+	if resp == nil || resp.StatusCode != 200 {
 		return
 	}
 

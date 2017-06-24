@@ -3,7 +3,7 @@ package spiderIns
 import (
 	"fmt"
 
-	"github.com/hu17889/go_spider/core/downloader"
+	"github.com/takbj/myspider/3rd/go_spider/core/downloader"
 	//	"bytes"
 	"io/ioutil"
 	"net/http"
@@ -11,10 +11,10 @@ import (
 	//	"github.com/PuerkitoBio/goquery"
 	//	"github.com/bitly/go-simplejson"
 	//    iconv "github.com/djimenez/iconv-go"
-	"github.com/hu17889/go_spider/core/common/mlog"
-	"github.com/hu17889/go_spider/core/common/page"
-	"github.com/hu17889/go_spider/core/common/request"
-	//	"github.com/hu17889/go_spider/core/common/util"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/mlog"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/page"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/request"
+	//	"github.com/myspider/3rd/go_spider/core/common/util"
 	//    "golang.org/x/text/encoding/simplifiedchinese"
 	//    "golang.org/x/text/transform"
 	/*	"io"
@@ -64,11 +64,7 @@ func (this *tDownloadEx) downloadBin(p *page.Page, req *request.Request) *page.P
 	defer resp.Body.Close()
 	respBody, err := ioutil.ReadAll(resp.Body)
 	p.SetHeader(resp.Header)
-	if resp.StatusCode != 200 {
-		p.SetStatus(true, resp.Status)
-	} else {
-		p.SetStatus(false, "")
-	}
+	p.SetResp(resp)
 
 	//	fmt.Println("downloadBin  req.Url=", req.Url, ",len(respBody)=", len(respBody))
 

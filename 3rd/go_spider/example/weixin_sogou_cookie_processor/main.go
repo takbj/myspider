@@ -13,9 +13,9 @@ import (
     "fmt"
 
     "github.com/PuerkitoBio/goquery"
-    "github.com/hu17889/go_spider/core/common/page"
-    "github.com/hu17889/go_spider/core/pipeline"
-    "github.com/hu17889/go_spider/core/spider"
+    "github.com/takbj/myspider/3rd/go_spider/core/common/page"
+    "github.com/takbj/myspider/3rd/go_spider/core/pipeline"
+    "github.com/takbj/myspider/3rd/go_spider/core/spider"
 )
 
 type MyPageProcesser struct {

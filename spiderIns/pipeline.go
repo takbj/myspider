@@ -1,8 +1,8 @@
 package spiderIns
 
 import (
-	"github.com/hu17889/go_spider/core/common/com_interfaces"
-	"github.com/hu17889/go_spider/core/common/page_items"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/com_interfaces"
+	"github.com/takbj/myspider/3rd/go_spider/core/common/page_items"
 )
 
 type MyPipeline struct {

@@ -1,7 +1,7 @@
 package spiderIns
 
 import (
-	"github.com/hu17889/go_spider/core/spider"
+	"github.com/takbj/myspider/3rd/go_spider/core/spider"
 	"github.com/takbj/myspider/config"
 )
 
