@@ -21,14 +21,19 @@ func Run() {
 	//  PageProcesser ;
 	//  Task name used in Pipeline for record;
 
-	spiderIns := spider.NewSpider(NewMyPageProcesser(&config.C_SiteCfg), "TaskName")
-	for _, startUrl := range config.C_SiteCfg.GetStartUrls() {
-		existUrls[startUrl] = true
-		spiderIns.AddUrl(startUrl, "html") // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
+	for _, siteCfg := range config.C_SiteCfgs.Sites {
+		if !siteCfg.SwitchOn {
+			continue
+		}
+		spiderIns := spider.NewSpider(NewMyPageProcesser(siteCfg), "TaskName")
+		for _, startUrl := range siteCfg.GetStartUrls() {
+			existUrls[startUrl] = true
+			spiderIns.AddUrl(startUrl, "html") // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
+		}
+		spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
+							SetThreadnum(8). // Crawl request by three Coroutines
+							SetDownloader(&tDownloadEx{}).
+							Run()
 	}
-	spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
-						SetThreadnum(8). // Crawl request by three Coroutines
-						SetDownloader(&tDownloadEx{}).
-						Run()
 
 }

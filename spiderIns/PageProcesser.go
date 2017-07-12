@@ -2,6 +2,7 @@ package spiderIns
 
 import (
 	"fmt"
+	"sync"
 	//	"io"
 	"net/url"
 	"os"
@@ -88,11 +89,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 			}
 		}
 
-		if _, exist := existUrls[urlTmp]; !exist {
-			existUrls[urlTmp] = true
-			urls[urlTmp] = attrType
-			//			urls = append(urls, urlTmp)
-		}
+		urls = addUrl(urls, urlTmp, attrType)
 	}
 
 	query := p.GetHtmlParser()
@@ -107,6 +104,19 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 	for url, respType := range urls {
 		p.AddTargetRequest(url, respType)
 	}
+}
+
+var lock = &sync.Mutex{}
+
+func addUrl(urls map[string]string, urlTmp string, attrType string) map[string]string {
+	lock.Lock()
+	if _, exist := existUrls[urlTmp]; !exist {
+		existUrls[urlTmp] = true
+		urls[urlTmp] = attrType
+	}
+	lock.Unlock()
+
+	return urls
 }
 
 func save(curUrl *url.URL, bodyString string) bool {

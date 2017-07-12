@@ -5,7 +5,7 @@ package config
 // 	"os"
 
 var (
-	C_SiteCfg TSiteCfg
+	C_SiteCfgs TSites
 )
 
 type TParseNode struct {
@@ -14,12 +14,18 @@ type TParseNode struct {
 }
 
 type TSiteCfg struct {
+	Id              int  `json:"sites"`
+	SwitchOn        bool `json:"switch_on"`
 	StartUrls       []string
 	DefaultFileName string
 	HostList        []string
 	SearchNodes     map[string]*TParseNode
 
 	HostMaps map[string]bool
+}
+
+type TSites struct {
+	Sites []*TSiteCfg `json:"sites"`
 }
 
 func (this *TSiteCfg) GetStartUrls() []string { //起始页面
@@ -49,19 +55,21 @@ func (this *TSiteCfg) ForEachSearchNodes(param interface{}, cbFun func(nodeName 
 	}
 }
 
-func (this *TSiteCfg) OnBeforeLoad() {
+func (this *TSites) OnBeforeLoad() {
 
 }
 
-func (this *TSiteCfg) OnAfterLoad() {
-	this.HostMaps = map[string]bool{}
-	for _, host := range this.HostList {
-		this.HostMaps[host] = true
+func (this *TSites) OnAfterLoad() {
+	for _, siteCfg := range this.Sites {
+		siteCfg.HostMaps = map[string]bool{}
+		for _, host := range siteCfg.HostList {
+			siteCfg.HostMaps[host] = true
+		}
 	}
 }
 
 func init() {
-	registerCfg("site", "config/site_cfg.json", &C_SiteCfg)
+	registerCfg("site", "config/site_cfg.json", &C_SiteCfgs)
 }
 
 // func init() {
