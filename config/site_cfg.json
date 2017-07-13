@@ -2,8 +2,8 @@
 	"sites":[
 		{
 			"id":1,
-			"switch_on":true,
-			"StartUrls":["http://ilxdh.com/index.html","http://m.ilxdh.com/index.html"],
+			"switch_on":false,
+			"StartUrls":["http://ilxdh.com/index.html"],
 			"DefaultFileName":"index.html",
 			"HostList":["ilxdh.com","m.ilxdh.com","www.ilxdh.com","wx1.sinaimg.cn","wx2.sinaimg.cn","wx3.sinaimg.cn","wx4.sinaimg.cn"],
 			"SearchNodes":{

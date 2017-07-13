@@ -89,7 +89,7 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 			}
 		}
 
-		urls = addUrl(urls, urlTmp, attrType)
+		urls = addUrl(urls, urlTmp, attrType, urlStr)
 	}
 
 	query := p.GetHtmlParser()
@@ -108,10 +108,10 @@ func (this *MyPageProcesser) Process(p *page.Page) {
 
 var lock = &sync.Mutex{}
 
-func addUrl(urls map[string]string, urlTmp string, attrType string) map[string]string {
+func addUrl(urls map[string]string, urlTmp string, attrType string, parentUrl string) map[string]string {
 	lock.Lock()
 	if _, exist := existUrls[urlTmp]; !exist {
-		existUrls[urlTmp] = true
+		existUrls[urlTmp] = parentUrl
 		urls[urlTmp] = attrType
 	}
 	lock.Unlock()

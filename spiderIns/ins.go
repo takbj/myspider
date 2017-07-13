@@ -1,6 +1,8 @@
 package spiderIns
 
 import (
+	"fmt"
+
 	"github.com/takbj/myspider/3rd/go_spider/core/spider"
 	"github.com/takbj/myspider/config"
 )
@@ -14,7 +16,7 @@ const (
 	cstSaveRootPath string = "E:/zsy/spider_out/"
 )
 
-var existUrls map[string]bool = map[string]bool{}
+var existUrls map[string]string = map[string]string{}
 
 func Run() {
 	// Spider input:
@@ -27,13 +29,20 @@ func Run() {
 		}
 		spiderIns := spider.NewSpider(NewMyPageProcesser(siteCfg), "TaskName")
 		for _, startUrl := range siteCfg.GetStartUrls() {
-			existUrls[startUrl] = true
+			existUrls[startUrl] = ""
 			spiderIns.AddUrl(startUrl, "html") // Start url, html is the responce type ("html" or "json" or "jsonp" or "text")
 		}
 		spiderIns.AddPipeline(&MyPipeline{}). // Print result on screen
 							SetThreadnum(8). // Crawl request by three Coroutines
 							SetDownloader(&tDownloadEx{}).
 							Run()
+
+		if config.C_GlobalCfg.DebugFlag {
+			fmt.Println("-----------------------------------------------------------------")
+			for k, parent := range existUrls {
+				fmt.Println(k, "\n\t", parent)
+			}
+		}
 	}
 
 }
